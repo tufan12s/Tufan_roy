@@ -1,0 +1,296 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Tufan Roy - Academic Profile</title>
+    <style>
+        :root {
+            --photo-size: 180px; /* Adjust this value to tune the photo size (e.g., 200px, 250px) */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #003087;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header .text-container {
+            text-align: left;
+        }
+        header img {
+            width: var(--photo-size);
+            height: var(--photo-size);
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+        }
+        nav {
+            background-color: #005555;
+            padding: 10px;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #003087;
+            border-bottom: 2px solid #005555;
+            padding-bottom: 5px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        .section ul li {
+            margin-bottom: 10px;
+        }
+        .publication-year {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .contact-links a {
+            color: #005555;
+            text-decoration: none;
+        }
+        .contact-links a:hover {
+            text-decoration: underline;
+        }
+        .highlight {
+            font-weight: bold;
+        }
+        .doi-link {
+            font-size: 0.9em;
+            color: #005555;
+        }
+        .doi-link a {
+            color: #005555;
+            text-decoration: none;
+        }
+        .doi-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="text-container">
+            <h1>Dr. Tufan Roy</h1>
+            <p>Assistant Professor</p>
+            <p>Center for Science and Innovation in Spintronics (CSIS)<br>Tohoku University, Sendai, Japan</p>
+        </div>
+        <img src="Tufan_pic.png" alt="Dr. Tufan Roy">
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#about">About Me</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#research">Research Interests</a></li>
+            <li><a href="#skills">Technical Skills</a></li>
+            <li><a href="#publications">Publications</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div id="about" class="section">
+            <h2>About Me</h2>
+            <p>I am Dr. <span class="highlight">Tufan Roy</span>, a computational materials scientist specializing in spintronics and magnetic materials. As an Assistant Professor at Tohoku University’s Center for Science and Innovation in Spintronics, I am currently investigating magneto-transport phenomena in kagome magnets and Heusler alloys through an integrated methodology that combines first-principles calculations with data-driven analysis.</p>
+        </div>
+
+        <div id="education" class="section">
+            <h2>Education</h2>
+            <ul>
+                <li>Ph.D. in Physics, RRCAT, Indore, India (Sep. 2012 – Aug. 2017)<br>Thesis: Effect of Substitution on Electronic Structure, Magnetic and Mechanical Properties of Ni-, Pt-, and Mn-based Heusler Alloys</li>
+                <li>Master of Science (M.Sc), The University of Burdwan (2012)</li>
+                <li>Bachelor of Science (B.Sc (H)), The University of Burdwan (2010)</li>
+            </ul>
+        </div>
+
+        <div id="experience" class="section">
+            <h2>Research Experience</h2>
+            <ul>
+                <li>Assistant Professor, Tohoku University, Japan | Nov. 2022 – Present</li>
+                <li>Specially Appointed Assistant Professor, Tohoku University | Jul. 2021 – Oct. 2022</li>
+                <li>Postdoctoral Researcher, Tohoku University, Japan | May 2018 – Jun. 2021<br>Prime research interest: Computational design of magnetic tunnel junctions with high TMR at room temperature, using Heusler alloys and MgO barriers.</li>
+                <li>Postdoctoral Research Associate, RRCAT, Indore, India | Oct. 2017 – Mar. 2018<br>Continued research on magnetic shape memory Heusler alloys following Ph.D. submission.</li>
+            </ul>
+        </div>
+
+        <div id="research" class="section">
+            <h2>Research Interests</h2>
+            <ul>
+                <li>Spintronics, Magnetic tunnel junctions (MTJs)</li>
+                <li>Heusler alloys and martensitic transitions</li>
+                <li>Quantum materials, Topological properties of Zintl, Kagome lattice</li>
+                <li>High entropy alloys</li>
+                <li>Magnetism in metallic systems</li>
+            </ul>
+        </div>
+
+        <div id="skills" class="section">
+            <h2>Technical Skills</h2>
+            <ul>
+                <li>Theoretical Methods: First-principles calculations, Machine Learning</li>
+                <li>DFT Codes: VASP, SPR-KKR, Quantum ESPRESSO, OpenMX, CASTEP, WIEN2k, Wannier90</li>
+                <li>Scripting/Programming: Python, Fortran</li>
+                <li>Visualization & Analysis: XCrySDen, XMGrace, Igor</li>
+                <li>Operating Systems: Linux, Windows</li>
+            </ul>
+        </div>
+
+        <div id="publications" class="section">
+            <h2>Publications</h2>
+            <p>Total Papers: 28</p>
+            <div class="publication-year">2025</div>
+            <ul>
+                <li>Machine Learning for the Development of New Materials for a Magnetic Tunnel Junction<br>A. Hirohata, H. Koizumi, <span class="highlight">T. Roy</span>, M. Tsujikawa, S. Mizukami, K. Nawa and M. Shirai<br>npj Spintronics 3, 32<br><span class="doi-link">DOI: <a href="https://doi.org/10.1038/s44306-025-00094-z" target="_blank">10.1038/s44306-025-00094-z</a></span></li>
+                <li>Low-moment semiconducting properties of quaternary Heusler alloy CoRuTiSn<br>R. Kumar, <span class="highlight">T. Roy</span>, M. Shirai, S. Gupta<br>Journal of Alloys and Compounds 1026, 180530<br><span class="doi-link">DOI: <a href="https://doi.org/10.1016/j.jallcom.2025.180530" target="_blank">10.1016/j.jallcom.2025.180530</a></span></li>
+                <li>Strong antiferromagnetic interlayer exchange coupling induced by small additions of Re to an Ir interlayer in synthetic antiferromagnetic systems<br>Y. Saito, <span class="highlight">T. Roy</span>, S. Ikeda, M. Shirai, H. Honjo, H. Inoue, T. Endoh<br>Scientific Reports 15, 8977<br><span class="doi-link">DOI: <a href="https://doi.org/10.1038/s41598-025-94088-w" target="_blank">10.1038/s41598-025-94088-w</a></span></li>
+            </ul>
+            <div class="publication-year">2024</div>
+            <ul>
+                <li>Metastable body-centered cubic CoMnFe alloy films with perpendicular magnetic anisotropy for spintronics memory<br>D. Kumar, M. Ishibashi, <span class="highlight">T. Roy</span>, M. Tsujikawa, M. Shirai, S. Mizukami<br>Science and Technology of Advanced Materials, 25, 2421746<br><span class="doi-link">DOI: <a href="https://doi.org/10.1080/14686996.2024.2421746" target="_blank">10.1080/14686996.2024.2421746</a></span></li>
+            </ul>
+            <div class="publication-year">2023</div>
+            <ul>
+                <li>Ballistic spin-transport properties of magnetic tunnel junctions with MnCr-based ferrimagnetic quaternary Heusler alloys<br><span class="highlight">T. Roy</span>, M. Tsujikawa, M. Shirai<br>Physical Review Materials, 7, 104410<br><span class="doi-link">DOI: <a href="https://doi.org/10.1103/PhysRevMaterials.7.104410" target="_blank">10.1103/PhysRevMaterials.7.104410</a></span></li>
+                <li>Anisotropic magnetism and electronic structure of trigonal EuAl2Ge2 single crystals<br>S. Pakhira, A. K. Kundu, F. Islam, M. A. Tanatar, <span class="highlight">T. Roy</span>, T. Heitmann, T. Yilmaz, E. Vescovo, M. Tsujikawa, M. Shirai, R. Prozorov, D. Vaknin, and D. C. Johnston<br>Physical Review B, 107, 134439<br><span class="doi-link">DOI: <a href="https://doi.org/10.1103/PhysRevB.107.134439" target="_blank">10.1103/PhysRevB.107.134439</a></span></li>
+            </ul>
+            <div class="publication-year">2022</div>
+            <ul>
+                <li>Electronic and magnetic properties of the topological semimetal SmMg2Bi2<br>A. K. Kundu, S. Pakhira, <span class="highlight">T. Roy</span>, T. Yilmaz, M. Tsujikawa, M. Shirai, E. Vescovo, D. C. Johnston, A. N. Pasupathy, and T. Valla<br>Physical Review B, 106, 245131<br><span class="doi-link">DOI: <a href="https://doi.org/10.1103/PhysRevB.106.245131" target="_blank">10.1103/PhysRevB.106.245131</a></span></li>
+                <li>Topological electronic structure of YbMg2Bi2 and CaMg2Bi2<br>A. K. Kundu, <span class="highlight">T. Roy</span>, S. Pakhira, Z. Wu, M. Tsujikawa, M. Shirai, D. C. Johnston, A. N. Pasupathy, T. Valla<br>npj Quantum Materials 7, 67<br><span class="doi-link">DOI: <a href="https://doi.org/10.1038/s41535-022-00474-2" target="_blank">10.1038/s41535-022-00474-2</a></span></li>
+                <li>Structure and magnetism in metastable bcc Co1-xMnx epitaxial films<br>K. Kunimatsu, <span class="highlight">T. Roy</span>, J. Okabayashi, T. Tsuchiya, T. Ichinose, M. Tsujikawa, M. Shirai, S. Mizukami<br>Journal of Magnetism and Magnetic Materials, 548, 168841<br><span class="doi-link">DOI: <a href="https://doi.org/10.1016/j.jmmm.2021.168841" target="_blank">10.1016/j.jmmm.2021.168841</a></span></li>
+                <li>IrCrMnZ (Z= Al, Ga, Si, Ge) Heusler alloys as electrode materials for MgO-based magnetic tunneling junctions: A first-principles study<br><span class="highlight">T. Roy</span>, M. Tsujikawa, M. Shirai<br>Journal of Physics D: Applied Physics, 55, 125303<br><span class="doi-link">DOI: <a href="https://doi.org/10.1088/1361-6463/ac3dab" target="_blank">10.1088/1361-6463/ac3dab</a></span></li>
+            </ul>
+            <div class="publication-year">2021</div>
+            <ul>
+                <li>Lattice Softening in Metastable bcc CoxMn100-x(001) Ferromagnetic Layers for a Strain-Free Magnetic Tunnel Junction<br>K. Elphick, K. Yoshida, <span class="highlight">T. Roy</span>, T. Ichinose, K. Kunimatsu, T. Tsuchiya, K. Z. Suzuki, M. Tsujikawa, Y. Nagai, S. Mizukami, M. Shirai, A. Hirohata<br>Physical Review Applied, 16, 054052<br><span class="doi-link">DOI: <a href="https://doi.org/10.1103/PhysRevApplied.16.054052" target="_blank">10.1103/PhysRevApplied.16.054052</a></span></li>
+                <li>Observation of inverse magnetocaloric effect in magnetic-field-induced austenite phase of Heusler alloys Ni50-xCoxMn31.5Ga18.5 (x=9, 9.7)<br>T. Kihara, <span class="highlight">T. Roy</span>, X. Xu, A. Miyake, M. Tsujikawa, H. Mitamura, M. Tokunaga, Y. Adachi, T. Eto, T. Kanomata<br>Physical Review Materials, 5, 034416<br><span class="doi-link">DOI: <a href="https://doi.org/10.1103/PhysRevMaterials.5.034416" target="_blank">10.1103/PhysRevMaterials.5.034416</a></span></li>
+                <li>Structural and magnetic properties of epitaxial films of CoIrMnAl equiatomic quaternary Heusler alloy<br>R. Monma, <span class="highlight">T. Roy</span>, K. Suzuki, T. Tsuchiya, M. Tsujikawa, S. Mizukami, M. Shirai<br>Journal of Alloys and Compounds, 868, 159175<br><span class="doi-link">DOI: <a href="https://doi.org/10.1016/j.jallcom.2021.159175" target="_blank">10.1016/j.jallcom.2021.159175</a></span></li>
+                <li>Ab initio study of electronic and magnetic properties of Mn2RuZ/MgO (001) heterojunctions (Z = Al, Ge)<br><span class="highlight">T. Roy</span>, M. Tsujikawa, M. Shirai<br>Journal of Physics: Condensed Matter, 33, 145505<br><span class="doi-link">DOI: <a href="https://doi.org/10.1088/1361-648X/abdffc" target="_blank">10.1088/1361-648X/abdffc</a></span></li>
+            </ul>
+            <div class="publication-year">2020</div>
+            <ul>
+                <li>Magnetic tunnel junctions with metastable bcc Co3Mn electrodes<br>K. Kunimatsu, T. Tsuchiya, <span class="highlight">T. Roy</span>, K. Elphick, T. Ichinose, M. Tsujikawa, M. Shirai, S. Mizukami<br>Applied Physics Express, 13, 083007<br><span class="doi-link">DOI: <a href="https://doi.org/10.35848/1882-0786/aba883" target="_blank">10.35848/1882-0786/aba883</a></span></li>
+                <li>Ab-initio study of electronic and magnetic properties of CoIrMnZ (Z= Al, Si, Ga, Ge) Heusler alloys<br><span class="highlight">T. Roy</span>, M. Tsujikawa, T. Kanemura, M. Shirai<br>Journal of Magnetism and Magnetic Materials, 498, 166092<br><span class="doi-link">DOI: <a href="https://doi.org/10.1016/j.jmmm.2019.166092" target="_blank">10.1016/j.jmmm.2019.166092</a></span></li>
+                <li>Experimental inspection of a computationally-designed NiCrMnSi Heusler alloy with high Curie temperature<br>Y. Onodera, K. Elphick, T. Kanemura, <span class="highlight">T. Roy</span>, T. Tsuchiya, M. Tsujikawa, K. Yoshida, Y. Nagai, S. Mizukami, A. Hirohata, and M. Shirai<br>Japanese Journal of Applied Physics, 59, 073003<br><span class="doi-link">DOI: <a href="https://doi.org/10.35848/1347-4065/ab9c75" target="_blank">10.35848/1347-4065/ab9c75</a></span></li>
+            </ul>
+            <div class="publication-year">2019</div>
+            <ul>
+                <li>Magnetic tunnel junctions with a -ordered CoFeCrAl equiatomic Heusler alloy<br>T. Tsuchiya, <span class="highlight">T. Roy</span>, K. Elphick, J. Okabayashi, L. Bainsla, T. Ichinose, K. Z. Suzuki, S. Mizukami, M. Shirai<br>Physical Review Materials, 3, 084403<br><span class="doi-link">DOI: <a href="https://doi.org/10.1103/PhysRevMaterials.3.084403" target="_blank">10.1103/PhysRevMaterials.3.084403</a></span></li>
+                <li>Electronic structure of Au-Sn compounds grown on Au (111)<br>P. Sadhukhan, S. Barman, <span class="highlight">T. Roy</span>, V. K. Singh, S. Sarkar, A. Chakrabarti, S. R. Barman<br>Physical Review B, 100, 235404<br><span class="doi-link">DOI: <a href="https://doi.org/10.1103/PhysRevB.100.235404" target="_blank">10.1103/PhysRevB.100.235404</a></span></li>
+            </ul>
+            <div class="publication-year">2018</div>
+            <ul>
+                <li>Ab-initio study of X-Ray Absorption and X-Ray Magnetic Circular Dichroism Spectra of Mn2PtGa and Co2PtGa alloys<br><span class="highlight">T. Roy</span>, A. Banerjee, R. Dutt, J. Nayak, M. Maniraj, S. R. Barman, and A. Chakrabarti<br>Journal of Magnetism and Magnetic Materials, 466, 143<br><span class="doi-link">DOI: <a href="https://doi.org/10.1016/j.jmmm.2018.06.082" target="_blank">10.1016/j.jmmm.2018.06.082</a></span></li>
+            </ul>
+            <div class="publication-year">2017</div>
+            <ul>
+                <li>Ab initio studies on electronic and magnetic properties of X2PtGa (X= Cr, Mn, Fe, Co) Heusler alloys<br><span class="highlight">T. Roy</span>, A. Chakrabarti<br>Journal of Magnetism and Magnetic Materials, 423, 395-404<br><span class="doi-link">DOI: <a href="https://doi.org/10.1016/j.jmmm.2016.09.127" target="_blank">10.1016/j.jmmm.2016.09.127</a></span></li>
+                <li>Ab initio study of effect of Co substitution on the magnetic properties of Ni and Pt-based Heusler alloys<br><span class="highlight">T. Roy</span>, A. Chakrabarti<br>Physics Letters A, 381, 1449-1456<br><span class="doi-link">DOI: <a href="https://doi.org/10.1016/j.physleta.2017.02.020" target="_blank">10.1016/j.physleta.2017.02.020</a></span></li>
+            </ul>
+            <div class="publication-year">2016</div>
+            <ul>
+                <li>Probing the possibility of coexistence of martensite transition and half-metallicity in Ni and Co-based full-Heusler alloys: An ab initio calculation<br><span class="highlight">T. Roy</span>, D. Pandey, A. Chakrabarti<br>Physical Review B, 93, 184102<br><span class="doi-link">DOI: <a href="https://doi.org/10.1103/PhysRevB.93.184102" target="_blank">10.1103/PhysRevB.93.184102</a></span></li>
+                <li>Possibility of martensite transition in Pt–Y–Ga (Y= Cr, Mn, and Fe) system: An ab-initio calculation of the bulk mechanical, electronic and magnetic properties<br><span class="highlight">T. Roy</span>, A. Chakrabarti<br>Journal of Magnetism and Magnetic Materials, 401, 929-937<br><span class="doi-link">DOI: <a href="https://doi.org/10.1016/j.jmmm.2015.11.001" target="_blank">10.1016/j.jmmm.2015.11.001</a></span></li>
+            </ul>
+            <div class="publication-year">2015</div>
+            <ul>
+                <li>Effect of substitution on elastic stability, electronic structure and magnetic property of Ni–Mn based Heusler alloys: An ab initio comparison<br><span class="highlight">T. Roy</span>, M. E. Gruner, P. Entel, A. Chakrabarti<br>Journal of Alloys and Compounds, 632, 822-829<br><span class="doi-link">DOI: <a href="https://doi.org/10.1016/j.jallcom.2015.01.255" target="_blank">10.1016/j.jallcom.2015.01.255</a></span></li>
+                <li>Temperature Dependent EXAFS Study of Chromium-Doped GaFeO3 at Gallium and Iron Edges<br>S. Basu, R. Singh, A. Das, <span class="highlight">T. Roy</span>, A. Chakrabarti, A. K. Nigam, S. N. Jha, D. Bhattacharyya<br>The Journal of Physical Chemistry C, 119, 2029-2037<br><span class="doi-link">DOI: <a href="https://doi.org/10.1021/jp508103x" target="_blank">10.1021/jp508103x</a></span></li>
+            </ul>
+            <div class="publication-year">2014</div>
+            <ul>
+                <li>Magnetic properties and electronic structure of Mn–Ni–Ga magnetic shape memory alloys<br>S. W. D'Souza, <span class="highlight">T. Roy</span>, S. R. Barman, A. Chakrabarti<br>Journal of Physics: Condensed Matter, 26, 506001<br><span class="doi-link">DOI: <a href="https://doi.org/10.1088/0953-8984/26/50/506001" target="_blank">10.1088/0953-8984/26/50/506001</a></span></li>
+            </ul>
+            <div class="publication-year">2013</div>
+            <ul>
+                <li>Ab initio studies of effect of copper substitution on the electronic and magnetic properties of Ni MnGa and Mn NiGa<br>A. Chakrabarti, M. Siewert, <span class="highlight">T. Roy</span>, K. Mondal, A. Banerjee, M. E. Gruner, P. Entel<br>Physical Review B—Condensed Matter and Materials Physics, 88, 174116<br><span class="doi-link">DOI: <a href="https://doi.org/10.1103/PhysRevB.88.174116" target="_blank">10.1103/PhysRevB.88.174116</a></span></li>
+            </ul>
+        </div>
+
+        <div id="contact" class="section">
+            <h2>Contact</h2>
+            <p class="contact-links">
+                Email: <a href="mailto:roy.tufan.a3@tohoku.ac.jp">roy.tufan.a3@tohoku.ac.jp</a>, <a href="mailto:tufanroyburdwan@gmail.com">tufanroyburdwan@gmail.com</a><br>
+                Google Scholar: <a href="https://scholar.google.com/citations?user=Q63epwgAAAAJ&hl=en">Profile</a><br>
+                ResearchGate: <a href="https://www.researchgate.net/profile/Tufan-Roy">Profile</a><br>
+                researchmap: <a href="https://researchmap.jp/t_u_f_a_n?lang=en">Profile</a><br>
+                Last Updated: 01:48 PM JST, Wednesday, August 20, 2025
+            </p>
+        </div>
+    </div>
+</body>
+</html>
